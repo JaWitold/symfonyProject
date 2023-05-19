@@ -13,20 +13,17 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 #[CoversClass(ActuatorController::class)]
-
 class ActuatorControllerTest extends TestCase
 {
-    #[TestDox("It should return the health model as a JSON response")]
+    #[TestDox('It should return the health model as a JSON response')]
     public function testIndex(): void
     {
         $healthModelMock = new Health();
         $healthServiceMock = $this->createMock(HealthService::class);
-        $healthServiceMock->expects(self::once())
-            ->method('__invoke')
-            ->willReturn($healthModelMock);
+        $healthServiceMock->expects(self::once())->method('__invoke')->willReturn($healthModelMock);
 
         $controller = new ActuatorController();
-        $response = $controller->index($healthServiceMock);
+        $response = $controller->health($healthServiceMock);
 
         self::assertInstanceOf(JsonResponse::class, $response);
         self::assertEquals(json_encode($healthModelMock), $response->getContent());

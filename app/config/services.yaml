@@ -20,5 +20,43 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
+    _instanceof:
+        App\Interface\MeasurementSenderInterface:
+            tags: [ 'measurementSender' ]
+
+    App\Service\MeasurementSenderService\InfluxdbMeasurementSenderService:
+        arguments:
+            $organization: '%env(APP_ORG)%'
+            $bucket: '%env(INFLUXDB_BUCKET)%'
+            $precision: '%env(INFLUXDB_PRECISION)%'
+
+    App\Service\MeasurementSenderService\GraphiteMeasurementSenderService:
+        arguments:
+            $graphite: '@League\StatsD\Client'
+            $options:
+                  host: '%env(GRAPHITE_HOST)%'
+                  port: '%env(GRAPHITE_PORT)%'
+                  namespace: '%env(GRAPHITE_DEFAULT_NAMESPACE)%'
+
+    App\Enum\MeasurementSender: ~
+
+    App\Interface\ServiceClassProviderInterface: '@App\Enum\MeasurementSender'
+
+    App\EventSubscriber\RequestSubscriber:
+        arguments:
+            $measurementSenderServiceName: '%env(enum:App\Enum\MeasurementSender:APP_MEASUREMENT_SERVICE)%'
+
+    League\StatsD\Client:
+        class: League\StatsD\Client
+
+    InfluxDB2\Client:
+        arguments:
+            $options:
+                org: '%env(APP_ORG)%'
+                url: '%env(INFLUXDB_URL)%'
+                bucket: '%env(INFLUXDB_BUCKET)%'
+                token: '%env(INFLUXDB_ADMIN_TOKEN)%'
+                precision: '%env(INFLUXDB_PRECISION)%'
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
