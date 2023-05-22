@@ -1,4 +1,6 @@
 {
+    "name": "jawitold/symfony-project-template",
+    "description": "Template for symfony project",
     "type": "project",
     "license": "proprietary",
     "minimum-stability": "stable",

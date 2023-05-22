@@ -1,0 +1,46 @@
+name: Docker Publish
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - docker/php/Dockerfile
+  workflow_run:
+    workflows:
+      - "Build and push Docker image"
+    types:
+      - completed
+
+env:
+  DOCKERHUB_REPOSITORY: jawitold/symfony_project_template
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Check if Dockerfile has changed
+        id: dockerfile-check
+        run: |
+          if git diff --name-only HEAD^ HEAD | grep -q '^Dockerfile$'; then
+            echo "::set-output name=changed::true"
+          else
+            echo "::set-output name=changed::false"
+          fi
+
+      - name: Build and push Docker image
+        run: |
+          if [ "${{ steps.dockerfile-check.outputs.changed }}" == "true" ]; then
+            docker compose build php
+            # docker tag symfonyproject-php $DOCKERHUB_REPOSITORY:${{ github.sha }}
+            docker tag symfonyproject-php $DOCKERHUB_REPOSITORY:latest
+            echo ${{ secrets.DOCKERHUB_TOKEN }} | docker login --username ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+            # docker push $DOCKERHUB_REPOSITORY:${{ github.sha }}
+            docker push $DOCKERHUB_REPOSITORY:latest
+          else
+            echo "Dockerfile not modified. Skipping Docker image build and push."
+          fi

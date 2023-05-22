@@ -1,0 +1,57 @@
+# workflow.yml
+
+name: Code Quality
+
+on: [push]
+
+env:
+  DOCKERHUB_REPOSITORY: jawitold/symfony_project_template
+
+jobs:
+  run-phpcs:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Pull latest Docker image
+        run: docker pull $DOCKERHUB_REPOSITORY:latest
+
+      - name: Composer install
+        run: docker run --rm -e XDEBUG_MODE=off -v $PWD/app:/app -w /app $DOCKERHUB_REPOSITORY:latest composer install --dev
+
+      - name: Run PHPCS
+        run: docker run --rm -e XDEBUG_MODE=off -v $PWD/app:/app -w /app $DOCKERHUB_REPOSITORY:latest php vendor/bin/phpcs
+
+  run-phpstan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Pull latest Docker image
+        run: docker pull $DOCKERHUB_REPOSITORY:latest
+
+      - name: Composer install
+        run: docker run --rm -e XDEBUG_MODE=off -v $PWD/app:/app -w /app $DOCKERHUB_REPOSITORY:latest composer install --dev
+
+      - name: Run PHPStan
+        run: docker run --rm -e XDEBUG_MODE=off -v $PWD/app:/app -w /app $DOCKERHUB_REPOSITORY:latest php vendor/bin/phpstan
+
+  run-phpunit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Pull latest Docker image
+        run: docker pull $DOCKERHUB_REPOSITORY:latest
+
+      - name: Composer install
+        run: docker run --rm -e XDEBUG_MODE=off -v $PWD/app:/app -w /app $DOCKERHUB_REPOSITORY:latest composer install --dev
+
+      - name: Run PHPUnit
+        run: docker run --rm -e XDEBUG_MODE=coverage -v $PWD/app:/app -w /app $DOCKERHUB_REPOSITORY:latest php vendor/bin/phpunit --coverage-text
