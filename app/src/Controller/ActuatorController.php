@@ -12,7 +12,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class ActuatorController extends AbstractController
 {
     #[Route('/health', name: 'health')]
-    public function index(HealthService $healthService): JsonResponse
+    public function health(HealthService $healthService): JsonResponse
     {
         return new JsonResponse($healthService());
     }

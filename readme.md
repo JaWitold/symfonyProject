@@ -57,7 +57,7 @@ Before submitting a merge request, please ensure that the project passes the Git
    ``` bash
    docker-compose exec -t php sh -c "XDEBUG_MODE=off php vendor/bin/phpcs"
    ```
-- **PHP Psalm**: Performs static analysis to identify potential errors and improve code quality.
+- **PHPStan**: Performs static analysis to identify potential errors and improve code quality.
 
    ``` bash
    docker-compose exec -t php sh -c "XDEBUG_MODE=off php vendor/bin/phpstan analyse"
@@ -66,6 +66,12 @@ Before submitting a merge request, please ensure that the project passes the Git
 
    ``` bash
    docker-compose exec -t php sh -c "XDEBUG_MODE=off php vendor/bin/phpunit"
+   ```
+
+- **Code Coverage**: Runs the unit tests to ensure the coverage of the application.
+
+   ``` bash
+   docker-compose exec -t php sh -c "XDEBUG_MODE=coverage php vendor/bin/phpunit --coverage-text"
    ```
 Make sure all tests pass without any errors before submitting your merge request.
 
