@@ -73,12 +73,12 @@ are the available options:
 
 - **InfluxDB**: **InfluxDB** as the measurement service and **Grafana** for data visualization.
     ``` bash
-    docker compose -f docker-compose.yml -f docker/docker-compose/docker-compose.influxdb.override.yml -f docker/docker-compose/docker-compose.grafana.yml up -d
+    docker compose -f docker-compose.yml -f docker/docker-compose/docker-compose.influxdb.override.yml -f docker/docker-compose/docker-compose.grafana.yml --env-file docker/env/.env.influxdb --env-file docker/env/.env.grafana up -d
     ```
 
 - **Graphite**: **Graphite** as the measurement service and **Grafana** for data visualization.
     ``` bash
-    docker compose -f docker-compose.yml -f docker/docker-compose/docker-compose.graphite.override.yml -f docker/docker-compose/docker-compose.grafana.yml up -d
+    docker compose -f docker-compose.yml -f docker/docker-compose/docker-compose.graphite.override.yml -f docker/docker-compose/docker-compose.grafana.yml --env-file docker/env/.env.graphite --env-file docker/env/.env.grafana up -d
     ```
 
 ## Running Tests
