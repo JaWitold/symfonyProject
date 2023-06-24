@@ -4,20 +4,21 @@ declare(strict_types=1);
 
 namespace App\Factory;
 
+use Countable;
+use IteratorAggregate;
 use App\Interface\MeasurementSenderInterface;
 use App\Interface\ServiceClassProviderInterface;
-use Symfony\Component\DependencyInjection\Argument\RewindableGenerator;
 use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
 
 class MeasurementSenderServiceFactory
 {
     /**
-     * @var RewindableGenerator<MeasurementSenderInterface>
+     * @var IteratorAggregate<MeasurementSenderInterface>&Countable
      */
-    readonly private RewindableGenerator $measurementSenderServices;
+    readonly private IteratorAggregate&Countable $measurementSenderServices;
 
     public function __construct(
-        #[TaggedIterator('measurementSender')] RewindableGenerator $measurementSenderServices
+        #[TaggedIterator('measurementSender')] IteratorAggregate&Countable $measurementSenderServices
     ) {
         $this->measurementSenderServices = $measurementSenderServices;
     }
