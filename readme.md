@@ -1,6 +1,7 @@
 # Symfony Project Template
 
-This is a template for a Symfony project with Docker Compose setup, including NGINX, PHP, and PostgreSQL containers.
+This is a template for a Symfony project with Docker Compose setup, including **NGINX**, **PHP**, and **PostgreSQL**
+containers. Additionally for measurement purposes there have been added additional containers for **InfluxDB**, **Graphite** and **Grafana** which are not mandatory to run the application.
 
 ## Getting Started
 
@@ -39,9 +40,16 @@ To get started with this project template, follow the steps below:
    docker-compose up -d
    ```
 
-   This will start the NGINX, PHP, and PostgreSQL containers defined in the `docker-compose.yml` file.
+   This will start the **NGINX**, **PHP**, and **PostgreSQL** containers defined in the `docker-compose.yml` file.
 
-5. Open your browser and access the health endpoint:
+5. Install Composer dependencies:
+   ```bash
+    docker-compose exec -t php sh -c "XDEBUG_MODE=off composer install"
+   ```
+
+   This command will install the necessary dependencies for your Symfony project using Composer.
+
+6. Open your browser and access the health endpoint:
 
    ```
    http://localhost:8080/health
@@ -49,8 +57,34 @@ To get started with this project template, follow the steps below:
 
    If everything is set up correctly, you should see a response indicating the health of the application.
 
+## Running Application
+
+This application is microservice-based, which means you can run it with different services depending on your needs. Here
+are the available options:
+
+> **Note**: Please ensure that you set the `APP_MEASUREMENT_SERVICE` environment variable to the desired value before
+> running the respective command. If the `APP_MEASUREMENT_SERVICE` variable is not set, the application will use the
+> default option, even if **InfluxDB** or **Graphite** are running in the containers.
+
+- **Default**: No measurement service, all measurements are saved to the debug log.
+    ``` bash
+    docker compose up -d
+    ```
+
+- **InfluxDB**: **InfluxDB** as the measurement service and **Grafana** for data visualization.
+    ``` bash
+    docker compose -f docker-compose.yml -f docker/docker-compose/docker-compose.influxdb.override.yml -f docker/docker-compose/docker-compose.grafana.yml up -d
+    ```
+
+- **Graphite**: **Graphite** as the measurement service and **Grafana** for data visualization.
+    ``` bash
+    docker compose -f docker-compose.yml -f docker/docker-compose/docker-compose.graphite.override.yml -f docker/docker-compose/docker-compose.grafana.yml up -d
+    ```
+
 ## Running Tests
-Before submitting a merge request, please ensure that the project passes the GitHub CI/CD pipeline. The following tests are performed:
+
+Before submitting a merge request, please ensure that the project passes the GitHub CI/CD pipeline. The following tests
+are performed:
 
 - **PHP Code Sniffer**: Checks the code against coding standards to ensure consistency.
 
@@ -73,9 +107,10 @@ Before submitting a merge request, please ensure that the project passes the Git
    ``` bash
    docker-compose exec -t php sh -c "XDEBUG_MODE=coverage php vendor/bin/phpunit --coverage-text"
    ```
+
 Make sure all tests pass without any errors before submitting your merge request.
 
-## Usage
+## Usage & development
 
 You can start building your Symfony application based on this template. The project structure follows standard Symfony
 conventions.
