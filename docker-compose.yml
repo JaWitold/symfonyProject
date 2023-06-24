@@ -33,43 +33,6 @@ services:
       POSTGRES_DB: ${POSTGRES_DB:-app}
     ports:
       - "${POSTGRES_PORT:-5432}:5432"
-  influxdb:
-    image: influxdb:2.7-alpine
-    container_name: influxdb
-    restart: always
-    volumes:
-      - symfony-project-influxdb-data:/var/lib/influxdb2
-    environment:
-      DOCKER_INFLUXDB_INIT_MODE: setup
-      DOCKER_INFLUXDB_INIT_USERNAME: ${INFLUXDB_USER:-app}
-      DOCKER_INFLUXDB_INIT_PASSWORD: ${INFLUXDB_PASSWORD:-ChangeMe}
-      DOCKER_INFLUXDB_INIT_ORG: ${APP_ORG:-app}
-      DOCKER_INFLUXDB_INIT_BUCKET: ${INFLUXDB_BUCKET:-default-bucket}
-      DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: ${INFLUXDB_ADMIN_TOKEN:-admin_token}
-    ports:
-      - "${INFLUX_PORT:-8086}:8086"
-  graphite:
-    image: graphiteapp/graphite-statsd:1.1.10-4
-    container_name: graphite
-    restart: always
-    volumes:
-      - symfony-project-graphite-data:/opt/graphite/storage
-    ports:
-      - '${GRAPHITE_NGINX:-80}:80'
-      - '${GRAPHITE_STATSD:-8125}:8125'
-  grafana:
-    image: grafana/grafana:9.5.2
-    container_name: grafana
-    restart: always
-    volumes:
-      - symfony-project-grafana-data:/var/lib/grafana
-    environment:
-      GF_INSTALL_PLUGINS: grafana-clock-panel,grafana-simple-json-datasource
-    ports:
-      - "${GRAFANA_PORT:-3000}:3000"
 
 volumes:
   symfony-project-postgres-data:
-  symfony-project-influxdb-data:
-  symfony-project-graphite-data:
-  symfony-project-grafana-data:
